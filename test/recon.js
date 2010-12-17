@@ -33,8 +33,6 @@ exports.buffered_write = function (assert) {
         server1.on('close', function () {
             setTimeout(function () {
                 var server2 = net.createServer(function (stream) {
-                    stream.setNoDelay();
-                    
                     stream.write('end');
                     var recv = [];
                     stream.on('data', function (buf) {
@@ -42,6 +40,7 @@ exports.buffered_write = function (assert) {
                     });
                     
                     setTimeout(function () {
+                        conn.destroy();
                         stream.destroy();
                         server2.close();
                         assert.eql(recv, [ 'pow!', 'end' ]);

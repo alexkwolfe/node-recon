@@ -24,11 +24,13 @@ exports = module.exports = function recon () {
     self.end = function (msg) {
         if (msg !== undefined) self.write(msg);
         alive = false;
+        connected = false;
         conn.end();
     };
     
     self.destroy = function () {
         alive = false;
+        connected = false;
         conn.destroy();
     };
     
@@ -41,6 +43,7 @@ exports = module.exports = function recon () {
         conn.on('connect', function () {
             self.emit(connections === 0 ? 'connect' : 'reconnect');
             connections ++;
+            connected = true;
             
             var buffered = buffer.length > 0;
             var ok = true;
@@ -49,6 +52,7 @@ exports = module.exports = function recon () {
                 ok = ok && wrote;
             });
             buffer = [];
+            
             if (buffered && ok) self.emit('drain');
         });
         
@@ -61,6 +65,7 @@ exports = module.exports = function recon () {
         });
         
         conn.on('end', function () {
+            connected = false;
             setTimeout(connect, params.retry || 1000);
         });
     })();
