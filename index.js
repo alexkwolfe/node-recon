@@ -91,5 +91,6 @@ function parseArgs (argv) {
         }
     });
     params.port = parseInt(params.port, 10);
+    return params;
 };
 
