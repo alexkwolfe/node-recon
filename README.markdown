@@ -10,7 +10,34 @@ connection comes back up, recon emits a `drain` event.
 Examples
 ========
 
+stayin_alive.js
+---------------
+    var recon = require('recon');
+    var conn = recon(4321);
+    
+    conn.on('data', function (buf) {
+        var msg = buf.toString().trim()
+        console.log(msg);
+    });
 
+then fire up stayin_alive.js:
+    $ node stayin_alive.js
+
+and then you can listen on port 4321 with netcat, type some stuff, kill netcat,
+and fire it up again to type some more stuff:
+    $ nc -lp 4321
+    nc: using stream socket
+    everybody stop
+    ^C
+    $ nc -lp 4321
+    nc: using stream socket
+    hammertime
+    ^C
+
+and meanwhile stayin_alive.js didn't skip a beat:
+    $ node stayin_alive.js 
+    everybody stop
+    hammertime
 
 Usage
 =====
