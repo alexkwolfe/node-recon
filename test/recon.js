@@ -4,7 +4,11 @@ var net = require('net');
 exports.buffered_write = function (assert) {
     var port = Math.floor(10000 + Math.random() * (Math.pow(2,16) - 10000));
     
-    var conn = recon(port);
+    var cb_count = 0;
+    var conn = recon(port, function (c) {
+        assert.ok(c instanceof net.Stream);
+        cb_count ++;
+    });
     var bufs = [];
     
     conn.on('data', function (buf) {
@@ -44,6 +48,7 @@ exports.buffered_write = function (assert) {
                         stream.destroy();
                         server2.close();
                         assert.eql(recv, [ 'pow!', 'end' ]);
+                        assert.eql(cb_count, 3);
                     }, 50);
                 });
                 server2.listen(port);
