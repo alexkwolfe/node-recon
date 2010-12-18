@@ -36,6 +36,7 @@ exports = module.exports = function recon () {
     
     (function connect () {
         conn = net.createConnection(params.port, params.host);
+        if (params.cb) params.cb(conn);
         
         conn.on('data', self.emit.bind(self, 'data'));
         conn.on('drain', self.emit.bind(self, 'drain'));
@@ -89,6 +90,9 @@ function parseArgs (argv) {
         else if (typeof arg === 'number') {
             params.port = arg;
         }
+        else if (typeof arg === 'function') {
+            params.cb = arg;
+        }
         else if (typeof arg === 'object' && arg !== null) {
             Object.keys(arg).forEach(function (key) {
                 params[key] = arg[key];
@@ -98,4 +102,3 @@ function parseArgs (argv) {
     params.port = parseInt(params.port, 10);
     return params;
 };
-
