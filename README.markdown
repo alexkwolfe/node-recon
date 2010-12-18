@@ -42,10 +42,15 @@ and meanwhile stayin_alive.js didn't skip a beat:
 Usage
 =====
 
-recon(port, host='127.0.0.1', options={})
------------------------------------------
+recon(port)
+-----------
+recon(port, host, cb, kwargs={})
+--------------------------------
 
-Create a connection
+Create a connection. The arguments can be specified in `kwargs` or wherever in
+arguments list and are optional except port. `cb` is a function that gets the
+raw `Stream` object each time a new connection happens for tacking on methods
+like `.setNoDelay()`.
 
 write(msg)
 ----------
