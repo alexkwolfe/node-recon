@@ -22,6 +22,20 @@ exports.buffered_write = function (assert) {
         }, 25);
     });
     
+    var cto = setTimeout(function () {
+        assert.fail('never connected');
+    }, 5000);
+    conn.on('connect', function () {
+        clearTimeout(cto);
+    });
+    
+    var rcto = setTimeout(function () {
+        assert.fail('never reconnected');
+    }, 5000);
+    conn.on('reconnect', function () {
+        clearTimeout(rcto);
+    });
+    
     setTimeout(function () {
         var server1 = net.createServer(function (stream) {
             stream.write('pow!');
