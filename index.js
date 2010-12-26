@@ -62,9 +62,12 @@ exports = module.exports = function recon () {
         });
         
         conn.on('error', function (err) {
-            if (err.errno === 111) {
+            if (err.errno === process.ECONNREFUSED) {
                 self.emit('retry');
                 setTimeout(connect, params.retry || 1000);
+            }
+            else if (err.errno === process.ENOTCONN) {
+                if (connected) self.emit('error', err);
             }
             else self.emit('error', err);
         });
