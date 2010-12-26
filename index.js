@@ -11,6 +11,8 @@ exports = module.exports = function recon () {
     var buffer = [];
     var connections = 0;
     
+    self.readyState = 'opening';
+    
     self.write = function (msg) {
         if (connected) {
             return conn.write(msg);
@@ -26,6 +28,7 @@ exports = module.exports = function recon () {
         alive = false;
         connected = false;
         conn.end();
+        self.readyState = 'closed';
     };
     
     self.destroy = function () {
@@ -42,6 +45,7 @@ exports = module.exports = function recon () {
         conn.on('drain', self.emit.bind(self, 'drain'));
         
         conn.on('connect', function () {
+            self.readyState = 'open';
             self.emit(connections === 0 ? 'connect' : 'reconnect');
             connections ++;
             connected = true;

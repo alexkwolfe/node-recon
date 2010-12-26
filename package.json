@@ -1,6 +1,6 @@
 {
     "name" : "recon",
-    "version" : "0.0.3",
+    "version" : "0.0.4",
     "description" : "Keep a network connection alive by reconnecting repeatedly",
     "modules" : {
         "index" : "./index.js",
