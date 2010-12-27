@@ -22,11 +22,22 @@ exports.buffered_write = function (assert) {
         }, 25);
     });
     
+    var events = [];
+    
     var cto = setTimeout(function () {
         assert.fail('never connected');
     }, 5000);
     conn.on('connect', function () {
         clearTimeout(cto);
+        events.push('connect');
+    });
+    
+    var dto = setTimeout(function () {
+        assert.fail('never dropped');
+    }, 5000);
+    conn.on('drop', function () {
+        clearTimeout(dto);
+        events.push('drop');
     });
     
     var rcto = setTimeout(function () {
@@ -34,6 +45,9 @@ exports.buffered_write = function (assert) {
     }, 5000);
     conn.on('reconnect', function () {
         clearTimeout(rcto);
+        events.push('reconnect');
+        
+        assert.eql(events, [ 'connect', 'drop', 'reconnect' ]);
     });
     
     setTimeout(function () {
