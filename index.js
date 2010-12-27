@@ -73,6 +73,7 @@ exports = module.exports = function recon () {
         });
         
         conn.on('end', function () {
+            self.emit('drop');
             connected = false;
             setTimeout(connect, params.retry || 1000);
         });
