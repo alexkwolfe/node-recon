@@ -82,5 +82,5 @@ exports.buffered_write = function (assert) {
                 server2.listen(port);
             }, 100);
         });
-    });
+    }, 100);
 };
