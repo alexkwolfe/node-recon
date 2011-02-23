@@ -1,6 +1,6 @@
 {
     "name" : "recon",
-    "version" : "0.0.7",
+    "version" : "0.0.8",
     "description" : "Keep a network connection alive by reconnecting repeatedly",
     "main" : "./index.js",
     "repository" : {
@@ -17,6 +17,10 @@
         "email" : "mail@substack.net",
         "url" : "http://substack.net"
     },
+    "directories" : {
+        "examples" : "./examples"
+    },
+    "scripts" : { "test" : "expresso" },
     "license" : "MIT/X11",
-    "engine" : ["node >=0.2.0"]
+    "engine" : { "node" : ">=0.4.0" }
 }

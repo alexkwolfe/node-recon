@@ -6,15 +6,13 @@ exports = module.exports = function recon () {
     var self = new EventEmitter;
     
     var conn = null;
-    var connected = false;
-    var alive = true;
     var buffer = [];
     var connections = 0;
     
     self.readyState = 'opening';
     
     self.write = function (msg) {
-        if (connected) {
+        if (conn.writable) {
             return conn.write(msg);
         }
         else {
@@ -23,17 +21,18 @@ exports = module.exports = function recon () {
         }
     };
     
+    self.writable = false;
+    
     self.end = function (msg) {
         if (msg !== undefined) self.write(msg);
-        alive = false;
-        connected = false;
+        self.writable = false;
+        self.readable = false;
         conn.end();
-        self.readyState = 'closed';
     };
     
     self.destroy = function () {
-        alive = false;
-        connected = false;
+        self.writable = false;
+        self.readable = false;
         conn.destroy();
     };
     
@@ -45,7 +44,9 @@ exports = module.exports = function recon () {
         conn.on('drain', self.emit.bind(self, 'drain'));
         
         conn.on('connect', function () {
-            self.readyState = 'open';
+            self.readable = true;
+            self.writable = true;
+            
             self.emit(connections === 0 ? 'connect' : 'reconnect');
             connections ++;
             connected = true;
@@ -62,11 +63,11 @@ exports = module.exports = function recon () {
         });
         
         conn.on('error', function (err) {
-            if (err.errno === process.ECONNREFUSED) {
+            if (err.code === 'ECONNREFUSED') {
                 self.emit('retry');
                 setTimeout(connect, params.retry || 1000);
             }
-            else if (err.errno === process.ENOTCONN) {
+            else if (err.code === 'ENOTCONN') {
                 if (connected) self.emit('error', err);
             }
             else self.emit('error', err);
@@ -74,8 +75,10 @@ exports = module.exports = function recon () {
         
         conn.on('end', function () {
             self.emit('drop');
-            connected = false;
-            setTimeout(connect, params.retry || 1000);
+            self.readable = false;
+            if (self.writable) {
+                setTimeout(connect, params.retry || 1000);
+            }
         });
     })();
     

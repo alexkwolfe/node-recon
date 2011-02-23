@@ -27,6 +27,7 @@ exports.buffered_write = function (assert) {
     var cto = setTimeout(function () {
         assert.fail('never connected');
     }, 5000);
+    
     conn.on('connect', function () {
         clearTimeout(cto);
         events.push('connect');
