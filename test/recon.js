@@ -1,4 +1,4 @@
-var recon = require('recon');
+var recon = require('../');
 var test = require('tap').test;
 var net = require('net');
 
