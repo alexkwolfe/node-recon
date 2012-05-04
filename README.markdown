@@ -7,6 +7,8 @@ and tries to re-establish the connection behind the scenes. While the connection
 is down, `write()` returns `false` and the data gets buffered. When the
 connection comes back up, recon emits a `drain` event.
 
+[![build status](https://secure.travis-ci.org/substack/node-recon.png)](http://travis-ci.org/substack/node-recon)
+
 Examples
 ========
 
