@@ -20,7 +20,12 @@
     "directories" : {
         "examples" : "./examples"
     },
-    "scripts" : { "test" : "expresso" },
+    "devDependencies" : {
+        "tap" : "~0.2.4"
+    },
+    "scripts" : {
+        "test" : "tap test/*.js"
+    },
     "license" : "MIT/X11",
     "engine" : { "node" : ">=0.4.0" }
 }
