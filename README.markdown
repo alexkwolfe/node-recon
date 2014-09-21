@@ -64,6 +64,12 @@ write(msg)
 
 Like `stream.write`, but buffers data while the module is reconnecting.
 
+
+pipe(destination, options)
+--------------------------
+
+Delegates to `stream.pipe`.
+
 end()
 -----
 end(msg)
