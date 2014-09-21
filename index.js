@@ -35,6 +35,17 @@ exports = module.exports = function recon () {
         self.readable = false;
         conn.destroy();
     };
+
+    self.pipe = function(destination, options) {
+        return conn.pipe(destination, options);
+    };
+
+    Object.defineProperty(self, 'pipesCount', {
+        get: function() {
+            return conn.pipesCount;
+        },
+        enumerable: true
+    });
     
     (function connect () {
         conn = net.createConnection(params.port, params.host);
