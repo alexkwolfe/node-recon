@@ -8,7 +8,8 @@ exports = module.exports = function recon () {
     var conn = null;
     var buffer = [];
     var connections = 0;
-    
+    var retryErrors = params.retryErrors || ['ECONNREFUSED'];
+
     self.readyState = 'opening';
     
     self.write = function (msg) {
@@ -39,10 +40,10 @@ exports = module.exports = function recon () {
     (function connect () {
         conn = net.createConnection(params.port, params.host);
         if (params.cb) params.cb(conn);
-        
+
         conn.on('data', self.emit.bind(self, 'data'));
         conn.on('drain', self.emit.bind(self, 'drain'));
-        
+
         conn.on('connect', function () {
             self.readable = true;
             self.writable = true;
@@ -63,7 +64,7 @@ exports = module.exports = function recon () {
         });
         
         conn.on('error', function (err) {
-            if (err.code === 'ECONNREFUSED') {
+            if (retryErrors.indexOf(err.code) !== -1) {
                 self.emit('retry');
                 setTimeout(connect, params.retry || 1000);
             }

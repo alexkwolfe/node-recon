@@ -54,6 +54,11 @@ arguments list and are optional except port. `cb` is a function that gets the
 raw `Stream` object each time a new connection happens for tacking on methods
 like `.setNoDelay()`.
 
+#### kwargs
+
+* `retry` &mdash; Millisecond interval between reconnection retries.
+* `retryErrors` &mdash; An array of errors that will cause a reconnect. Default `['ECONNREFUSED']`.
+
 write(msg)
 ----------
 
@@ -89,5 +94,5 @@ Emitted each time the module establishes a connection after the first time.
 Event: error(err)
 -----------------
 
-Just like stream, unless `err.errno` is 111 (ECONNREFUSED), in which case the
+Just like stream, unless `err.code` is in the `retryErrors` array, in which case the
 error gets eaten and recon reconnects behind the scenes.
